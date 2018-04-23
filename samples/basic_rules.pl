@@ -7,6 +7,11 @@
 %
 %
 
+debug(MSG, Y) :- ( toggle(n), write("Debug: "), write(MSG), write(" "), write(Y), nl);!.
+debug(MSG) :- debug(MSG, "").
+toggle(y) :- !.
+toggle(n) :- fail.
+
 
 person(josh).           % josh is a person
 person(alberto).
@@ -30,6 +35,7 @@ married(josh, gilda).
 
 % josh is parent of alberto
 parent(josh, alberto).
+parent(josh, leandro).
 parent(josh, lineu).
 parent(josh, alan).
 
@@ -39,6 +45,7 @@ parent(gilda, regina).
 
 parent(robson, regina).
 parent(rebeca, alberto).
+parent(rebeca, leandro).
 
 % lineu is blood brother of alan
 % stepbrother of alberto and regina
@@ -47,75 +54,83 @@ parent(rebeca, alberto).
 
 % X is Brother of Y ... if ... Z is parent of X and Y
 brother(X,Y) :-
-    X \= Y,
-    bloodBrother(X,Y);
-    stepBrother(X,Y)
-    .
+    X \== Y,
+    ( bloodBrother(X,Y); stepBrother(X,Y) ).
 
 % same mother and same father
 bloodBrother(X,Y) :-
-    X \= Y,
+    X \== Y,
     father(Man,X), % Same father
     father(Man,Y),
     mother(Woman,X), % Same mother
-    mother(Woman,Y)
-    .
+    mother(Woman,Y).
 
 % A Person is the father of a Child if a man and a parent of a Child
 father(Person, Child) :-
+    debug(" -- Father Function"),
     man(Person),
-    parent(Person, Child)
-    .
-
+    parent(Person, Child),
+    debug(Person, Child).
+    
 % Same as father
 mother(Person, Child) :-
     woman(Person),
-    parent(Person, Child)
-    .
+    parent(Person, Child).
 
 % A Man is a step father of a Child if it is not the father of this child and is married with ther Child's Mother
 stepFather(Man, Child) :-
-    not(father(Man, Child)),
+    debug(" -- StepFather Function"),
+    married(Man, Woman),
     mother(Woman, Child),
-    married(Man, Woman)
-    .
+    not(father(Man, Child)),
+    debug(Man, Child).
 
 % Same logic of step father
-stepMother(Woman, Child) :-
-    not(mother(Woman, Child)),
+stepMother(Mon, Child) :-
+    debug(" -- StepMother Function"),
+    married(Man, Mon),
     father(Man, Child),
-    married(Man, Woman)
-    .
+    not(mother(Mon, Child)),
+    debug(Mon, Child).
 
 % Person is step brother of StepBrother if his mother or father are step mother or step father of StepBrother
 stepBrother(Person,StepBrother) :-
-    Person \= StepBrother, % People are not the same
+    debug(" -- StepBrother Function"),
+    debug("Person",Person),
+    debug("StepBrother",StepBrother),
+
+    Person \== StepBrother, % People are not the same
+
     father(Man, Person), % Person's father
-    mother(Woman, Person),
-    stepFather(Man, StepBrother); stepMother(Woman, StepBrother) 
-    .
+    mother(Mon, Person),
+
+    (stepMother(Mon, StepBrother); stepFather(Man, StepBrother)),
+    debug("** found ** StepBrother",StepBrother).
+
 
 % List all brothers of X
 listBrothers(X) :-
-    write_ln("Brothers:");
+    write_ln("Brothers:"),
     brother(X, Y),
+    X \== Y,
     write_ln(Y),
-    fail
-    .
+    fail.
 
 % List all blood brothers
 listBloodBrothers(X) :-
-    write_ln("Blood Brothers:");
+    write("Blood Brothers:"), nl,
     bloodBrother(X, Y),
+    X \== Y,
     write_ln(Y),
-    fail
-    .
+    fail.
+
 
 % List all step brothers
 listStepBrothers(X) :-
-    write_ln("Step Brothers:");
+    write_ln("Step Brothers:"),
     stepBrother(X, Y),
+    X \== Y,
     write_ln(Y),
-    fail
-    .
+    fail.
     
+listStepBrothers :- write("end").
