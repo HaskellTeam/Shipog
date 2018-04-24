@@ -7,6 +7,9 @@
 %
 %
 
+% module(basic_rules, [person/1]).
+load_test_files(basic_rules_tests).
+
 debug(MSG, Y) :- ( toggle(n), write("Debug: "), write(MSG), write(" "), write(Y), nl);!.
 debug(MSG) :- debug(MSG, "").
 toggle(y) :- !.
@@ -44,6 +47,7 @@ parent(gilda, lineu).
 parent(gilda, regina).
 
 parent(robson, regina).
+
 parent(rebeca, alberto).
 parent(rebeca, leandro).
 
@@ -55,7 +59,7 @@ parent(rebeca, leandro).
 % X is Brother of Y ... if ... Z is parent of X and Y
 brother(X,Y) :-
     X \== Y,
-    ( bloodBrother(X,Y); stepBrother(X,Y) ).
+    ( bloodBrother(X,Y); stepBrother(X,Y) ),!.
 
 % same mother and same father
 bloodBrother(X,Y) :-
@@ -105,7 +109,7 @@ stepBrother(Person,StepBrother) :-
     mother(Mon, Person),
 
     (stepMother(Mon, StepBrother); stepFather(Man, StepBrother)),
-    debug("** found ** StepBrother",StepBrother).
+    debug("** found ** StepBrother",StepBrother),!.
 
 
 % List all brothers of X
@@ -132,5 +136,3 @@ listStepBrothers(X) :-
     X \== Y,
     write_ln(Y),
     fail.
-    
-listStepBrothers :- write("end").
