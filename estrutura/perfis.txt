@@ -1,0 +1,8 @@
+liberal/conservador/0-10
+esquerda/direita/0-10
+contra/aFavor/0-10  (Aborto)
+contra/aFavor/0-10  (Maconha)
+contra/aFavor/0-10  (Armamento)
+contra/aFavor/0-10  (Maioridade Penal)
+contra/aFavor/0-10  (Casamento homoafetivo)
+contra/aFavor/0-10  (Ensino Religioso)
