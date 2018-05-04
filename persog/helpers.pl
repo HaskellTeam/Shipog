@@ -3,4 +3,3 @@ debug(MSG, Y) :- ( toggle(n), write("Debug: "), write(MSG), write(" "), write(Y)
 debug(MSG) :- debug(MSG, "").
 toggle(y) :- !.
 toggle(n) :- fail.
-    
